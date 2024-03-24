@@ -9,12 +9,8 @@ OBJ_DIR = GetFromRoot("obj/%{cfg.buildcfg}/%{cfg.platform}/%{prj.name}")
 
 workspace("Nix.Lua")
     configurations({ "Debug", "Release" })
-    platforms({ "Linux", "Windows" })
+    platforms({ "Linux" })
     architecture("x86_64")
-
-    filter({ "platforms:Windows" })
-        system("windows")
-        defines({"_WIN"})
 
     filter({ "platforms:Linux" })
         system("linux")
