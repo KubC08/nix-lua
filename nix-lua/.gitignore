@@ -1,0 +1,15 @@
+# Premake output
+Makefile
+*.make
+
+# Project files
+external/*
+lib/*
+
+# Compiled files
+bin
+obj
+
+# Exceptions
+!external/README.md
+!lib/README.md
