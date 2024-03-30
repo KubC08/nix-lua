@@ -40,20 +40,21 @@ workspace("Nix.Lua")
         cppdialect("C++20")
         targetdir(BIN_DIR)
         objdir(OBJ_DIR)
+
         
         files({
             "src/**.h", "src/**.hpp", "src/**.hh",
             "src/**.cpp", "src/**.cc"
         })
         includedirs({ "src" })
+
         libdirs({ "lib" })
         externalincludedirs({
             "external/lua/src",
-            "external/nix/src/*",
-            "external/nix/src/libexpr",
             "external",
         })
         links({ "lua:shared" })
+
 
         filter("configurations:Debug")
             defines({"DEBUG"})

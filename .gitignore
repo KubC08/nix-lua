@@ -1,2 +1,5 @@
 # IDE specific
 .vscode
+
+# Nix
+result
