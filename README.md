@@ -118,3 +118,8 @@ There are a few things to still be implemented before this library is fully comp
  - [ ] Implement optionally returning a Lua function instead of an object
  - [ ] Add direct Lua file imports instead of having to use readFile and fromLUA
  - [ ] Implement Nix imports working with Lua files *(not sure if this one is possible)*
+
+## Credits
+- [Lua](https://www.lua.org/) for being able to use the Lua language
+- [Nix](https://nixos.org/) for being able to extend Nix
+- [Sol](https://github.com/ThePhD/sol2) for being able to use the wrapper for the Lua language
