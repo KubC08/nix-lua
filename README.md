@@ -54,9 +54,10 @@ Example of how your flake.nix file should look like:
 
 ## How to use
 The package adds a simple function called ``builtins.fromLUA`` which takes the given Lua string and executes it, with the returning object being in Nix format.
+This can be used to run Lua which returns any given Nix configuration. (Yes you can also use the require function within Lua)
 
 ### Use case examples
-To set your computer's network hostName you can use this code.
+Here is a simple example of how to set your computer's host name using Lua. This is a simple example however you can set any configuration in there, as long as it is also settable in Nix.
 This is equivalent to ``networking.hostName = "test-pc";`` in Nix.
 ```nix
 (builtins.fromLUA ''return { ["networking.hostName"] = "test-pc" }'')
@@ -74,6 +75,14 @@ Running from a file is quite simple, and is very similar to how you would run a 
 (builtins.fromLUA (builtins.readFile ./test.lua))
 ```
 This would execute the ``test.lua`` file and return it's contents as a nix object.
+
+### Running from a Nix import
+You can also run Lua from a Nix import and return the given data to the calling Nix file. Here is a simple example:
+```nix
+imports = [
+  (builtins.fromLUA (builtins.readFile ./test.lua))
+];
+```
 
 </br>
 
