@@ -63,7 +63,7 @@ This is equivalent to ``networking.hostName = "test-pc";`` in Nix.
 (builtins.fromLUA ''return { ["networking.hostName"] = "test-pc" }'')
 ```
 
-You can also use the deep object format such as. Which results in the same output.
+You can also use the deep object format such as the given example below. Which results in the same output.
 ```nix
 (builtins.fromLUA ''return { networking = { hostName = "test-pc" } }'')
 ```
@@ -83,6 +83,30 @@ imports = [
   (builtins.fromLUA (builtins.readFile ./test.lua))
 ];
 ```
+
+</br>
+
+## Building
+You can build the project yourself in 2 ways, the easiest would be to simply execute ``nix build`` in the root directory (containing flake.nix).
+The alternative would be to build it manually, here's a simple guide to do so:
+
+1. Move to the nix-lua directory.
+2. Populate the external directory based on how it's specified in the README.
+3. Populate the lib directory based on how it's specified in the README.
+4. Execute the command ``premake5 gmake2``.
+5. Run the command ``make config=release_linux``
+
+There are also other configurations for building, these are:
+- release_linux = Linux x64 Release
+- debug_linux = Linux x664 Debug
+- release_windows = Windows x64 Release
+- debug_windows = Windows x64 Debug
+- release_mac = Mac Universal Release
+- debug_mac = Mac Universal Debug
+- release_macarm = Mac ARM Release
+- debug_macarm = Mac ARM Debug
+- release_mac64 = Mac x64 Release
+- debug_mac64 = Mac x64 Debug
 
 </br>
 
