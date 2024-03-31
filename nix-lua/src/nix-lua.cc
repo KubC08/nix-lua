@@ -4,6 +4,8 @@
 #include <sol/sol.hpp>
 
 #include "lua-vm.hpp"
+#include "utils.hpp"
+#include "lua-funcs.hpp"
 
 namespace nix {
     static void prim_fromLUA(EvalState& state, const PosIdx pos, Value** args, Value& val) {
@@ -12,56 +14,9 @@ namespace nix {
         sol::state lua;
         sol::table script_table = luaVM::execute_and_get(lua, luaScript);
 
-        std::function<void(Value&, sol::object)> handleTable = [&](Value& nixValue, sol::object luaValue) {
-            switch(luaValue.get_type()) {
-                case sol::type::nil:
-                    nixValue.mkNull();
-                    break;
-                case sol::type::string:
-                    nixValue.mkString(luaValue.as<std::string>());
-                    break;
-                case sol::type::boolean:
-                    nixValue.mkBool(luaValue.as<bool>());
-                    break;
-                case sol::type::number:
-                    if (luaValue.is<NixFloat>()) {
-                        nixValue.mkFloat(luaValue.as<NixFloat>());
-                    } else if (luaValue.is<int64_t>()) {
-                        nixValue.mkInt(luaValue.as<int64_t>());
-                    }
-                    break;
-                case sol::type::table:
-                    sol::table tableValue = luaValue.as<sol::table>();
-                    size_t tableSize = tableValue.size();
+        lua["nix_function"] = LuaFuncs_Nix::build_function;
 
-                    if (tableSize > 0) { // Most likely an array
-                        state.mkList(nixValue, tableSize);
-                        tableValue.for_each([&](sol::object key, sol::object value) {
-                            if (!key.is<int64_t>()) return;
-                            int64_t index = key.as<int64_t>();
-
-                            handleTable(*(nixValue.listElems()[index] = state.allocValue()), value);
-                        });
-                    } else { // Most likely an object
-                        size_t objectSize = 0;
-                        tableValue.for_each([&](sol::object, sol::object) {
-                            objectSize++;
-                        });
-
-                        BindingsBuilder attrs = state.buildBindings(objectSize);
-                        tableValue.for_each([&](sol::object key, sol::object value) {
-                            if (!key.is<std::string>()) return;
-
-                            handleTable(attrs.alloc(key.as<std::string>()), value);
-                        });
-
-                        nixValue.mkAttrs(attrs);
-                    }
-                    break;
-            }
-        };
-
-        handleTable(val, script_table);
+        nix_utils::lua_object_to_nix(state, val, script_table);
     }
 
     static RegisterPrimOp primop_fromLUA({
