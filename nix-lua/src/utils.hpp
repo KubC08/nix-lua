@@ -13,5 +13,7 @@ namespace nix_utils {
 
     void lua_object_to_nix(nix::EvalState& state, nix::Value& nixValue, sol::object& luaValue);
     std::any nix_object_to_lua(nix::Value& val);
+
+    std::string generate_uuid_v4();
 }
 #endif

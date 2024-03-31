@@ -1,17 +1,15 @@
 #include "lua-funcs.hpp"
 #include "utils.hpp"
 
-#include <boost/uuid/uuid_generators.hpp>
-
 namespace LuaFuncs_Nix {
 
-    static std::map<std::string, sol::function&> builtin_funcs = {};
-    nix::PrimOp* build_function(ulong argNum, sol::function& func) {
-        std::string name = boost::lexical_cast<std::string>(boost::uuids::random_generator()());
+    static std::map<std::string, sol::function> builtin_funcs = {};
+    nix::PrimOp* build_function(ulong argNum, sol::function func) {
+        std::string name = "__" + nix_utils::generate_uuid_v4();
         builtin_funcs[name] = func;
 
         return new nix::PrimOp {
-            .name = "__" + name,
+            .name = name,
             .arity = argNum,
             .fun = [](nix::EvalState& state, const nix::PosIdx pos, nix::Value** args, nix::Value& val) {
                 if (val.primOp == nullptr) {
@@ -19,7 +17,7 @@ namespace LuaFuncs_Nix {
                 }
                 ulong argNum = val.primOp->arity;
                 std::string name = val.primOp->name;
-                sol::function& func = builtin_funcs[name];
+                sol::function func = builtin_funcs[name];
 
                 std::vector<std::any> luaArgs;
                 for (ulong i = 0; i < argNum; i++) {
