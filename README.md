@@ -114,8 +114,8 @@ There are also other configurations for building, these are:
 There are a few things to still be implemented before this library is fully complete. Here's a few
 
  - [ ] Implement calling Nix functions from within Lua
- - [ ] Implement calling Lua functions from within Nix
- - [ ] Implement optionally returning a Lua function instead of an object
+ - [X] Implement calling Lua functions from within Nix
+ - [X] Implement optionally returning a Lua function instead of an object
  - [ ] Add direct Lua file imports instead of having to use readFile and fromLUA
  - [ ] Implement Nix imports working with Lua files *(not sure if this one is possible)*
 
