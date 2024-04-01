@@ -19,7 +19,7 @@
           defaultPackage = packages.lua;
           packages.lua = pkgs.callPackage ./package.nix {};
 
-          plugin = ''${packages.lua}/lib/libNix.Lua.so'';
+          lua_lib = ''${packages.lua}/lib/libNix.Lua.so'';
           loader = import ./implement.nix {
             lua = lua_lib;
           };
