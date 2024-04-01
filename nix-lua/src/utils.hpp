@@ -12,7 +12,7 @@ namespace nix_utils {
     std::vector<std::string> split_string(std::string_view target, char seperator);
 
     void lua_object_to_nix(nix::EvalState& state, nix::Value& nixValue, sol::object& luaValue);
-    std::any nix_object_to_lua(nix::Value& val);
+    sol::object nix_object_to_lua(nix::EvalState& state, sol::state& lua, nix::Value& val);
 
     std::string generate_uuid_v4();
 }

@@ -1,25 +1,44 @@
 #include "lua-vm.hpp"
 #include "utils.hpp"
 
+#include "lua-funcs.hpp"
+
 namespace luaVM {
-    sol::table execute_and_get(sol::state& lua, std::string_view luaScript) {
+    void load_lua(sol::state& lua) {
         lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::string, sol::lib::table, sol::lib::math, sol::lib::utf8);
+        lua["nix_function"] = LuaFuncs_Nix::build_function;
+    }
+
+    sol::object execute_and_get(sol::state& lua, std::string_view luaScript) {
+        load_lua(lua);
 
         sol::load_result script = lua.load(luaScript);
         sol::protected_function_result script_result = script();
 
+        return handle_result(lua, script_result);
+    }
+
+    sol::object handle_result(sol::state& lua, sol::protected_function_result& script_result) {
         if (!script_result.valid()) {
             throw "invalid formatted script";
         }
-        if (script_result.return_count() != 1) {
-            throw "invalid return value of script";
+        if (script_result.return_count() == 0) {
+            return sol::nil;
         }
-        sol::table result = script_result[0];
+        sol::object result = script_result[0];
+        sol::type resultType = result.get_type();
 
-        return fix_table(lua, result);
+        switch (resultType)
+        {
+        case sol::type::table:
+            return fix_table(lua, result.as<sol::table>());
+        case sol::type::userdata:
+            return result;
+        }
+        return sol::nil;
     }
 
-    sol::table fix_table(sol::state& lua, sol::table& target) {
+    sol::table fix_table(sol::state& lua, sol::table target) {
         sol::table result = lua.create_table();
 
         std::function<void(sol::table&, sol::object, sol::object)> runTable = [&](sol::table& parent, sol::object key, sol::object value) {

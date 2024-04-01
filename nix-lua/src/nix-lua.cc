@@ -12,11 +12,9 @@ namespace nix {
         auto luaScript = state.forceStringNoCtx(*args[0], pos, "while evaluating the argument passed to builtins.fromLUA");
 
         sol::state lua;
-        sol::table script_table = luaVM::execute_and_get(lua, luaScript);
 
-        lua["nix_function"] = LuaFuncs_Nix::build_function;
-
-        nix_utils::lua_object_to_nix(state, val, script_table);
+        sol::object script_result = luaVM::execute_and_get(lua, luaScript);
+        nix_utils::lua_object_to_nix(state, val, script_result);
     }
 
     static RegisterPrimOp primop_fromLUA({
