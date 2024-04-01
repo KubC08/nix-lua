@@ -31,7 +31,7 @@ Example of how your flake.nix file should look like:
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     lua = {
-      url = "path:/etc/nixos/flakes/modules/nix-lua";
+      url = "github:KubC08/nix-lua";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
