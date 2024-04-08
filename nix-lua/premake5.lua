@@ -52,6 +52,7 @@ workspace("Nix.Lua")
         externalincludedirs({
             "external/lua/src",
             "external",
+            "external/nix", -- Fix for issue with Nix headers
         })
         links({ "lua:shared" })
 
